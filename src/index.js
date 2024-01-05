@@ -58,12 +58,20 @@ class Game extends React.Component {
             history: [{
                 squares: Array(9).fill(null),
             }],
-            usePrimarySymbol: true
+            usePrimarySymbol: true,
+            stepNumber: 0
         }
     }
 
+    jumpTo(step) {
+        this.setState({
+            stepNumber: (step),
+            usePrimarySymbol: (step % 2) === 0
+        })
+    }
+
     handleClick(cellNumber) {
-        const history = this.state.history
+        const history = this.state.history.slice(0, this.state.stepNumber + 1)
         const current = history[history.length - 1]
         if (calculateWinner(current.squares) !== null) return
 
@@ -71,7 +79,8 @@ class Game extends React.Component {
         squares[cellNumber] = this.state.usePrimarySymbol ? this.primarySymbol : this.alternateSymbol
         this.setState({
             history: history.concat([{squares}]),
-            usePrimarySymbol: !this.state.usePrimarySymbol
+            usePrimarySymbol: !this.state.usePrimarySymbol,
+            stepNumber: history.length
         })
     }
 
@@ -81,9 +90,17 @@ class Game extends React.Component {
 
     render() {
         const history = this.state.history
-        const current = history[history.length - 1]
+        const current = history[this.state.stepNumber]
         const winner = calculateWinner(current.squares)
-        let status
+
+        const moves = history.map((squares, move) => {
+            const description = move ? `go to move # ${move}` : "Go to game start"
+            return (
+                <li key={move}>
+                    <button onClick={() => this.jumpTo(move)}>{description}</button>
+                </li>
+            )
+        })
 
         const statusText = winner === null ? "Next player: " : "The winner is: "
         const statusSymbol = winner === null ? this.determineNextSymbol() : winner
@@ -98,7 +115,7 @@ class Game extends React.Component {
                 </div>
                 <div className="game-info">
                     <div className="status">{statusText}<span class="status-symbol">{statusSymbol}</span></div>
-                    <ol>{/* todo */}</ol>
+                    <ol>{moves}</ol>
                 </div>
             </div>
         )
