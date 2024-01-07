@@ -1,27 +1,74 @@
 import {useState} from "react";
 
 
-export default function Board() {
-    const [symbols, setSymbols] = useState({primarySymbol: "🍿", secondarySymbol: "🍩"})
+export default function Game() {
     const [usePrimarySymbol, setUsePrimarySymbol] = useState(true)
-    const [squares, setSquares] = useState(Array(9).fill(null))
-    
+    const [history, setHistory] = useState([Array(9).fill(null)])
+    const [currentMove, setCurrentMove] = useState(0)
+    const currentSquares = history[currentMove]
+
+    function handlePlay(nextSquares) {
+        const nextHistory = [...history.slice(0, currentMove + 1), nextSquares]
+        setHistory(nextHistory)
+        setCurrentMove(nextHistory.length - 1)
+        setUsePrimarySymbol(!usePrimarySymbol)
+    }
+
+    function handleGameReset() {
+        setHistory([Array(9).fill(null)])
+        setCurrentMove(0)
+        setUsePrimarySymbol(true)
+    }
+
+    function jumpTo(targetSquaresIndex) {
+        setCurrentMove(targetSquaresIndex)
+        setUsePrimarySymbol(targetSquaresIndex % 2 === 0)
+    }
+
+    const moves = history.map((squares, index) => {
+        const description = index > 0 ? `Go to move # ${index}` : `Go to game start`
+        return (
+            <li key={index}>
+                <button onClick={() => jumpTo(index)}>{description}</button>
+            </li>
+        )
+    })
+
+    return (
+        <div className="game">
+            <div className="game-board">
+                <Board
+                    squares={currentSquares}
+                    usePrimarySymbol={usePrimarySymbol}
+                    onPlay={handlePlay}
+                    onGameReset={handleGameReset}
+                />
+            </div>
+            <div className="game-info">
+                <ol>
+                    {moves}
+                </ol>
+            </div>
+        </div>
+    )
+}
+
+function Board({squares, usePrimarySymbol, onPlay, onGameReset}) {
+    const [symbols, setSymbols] = useState({primarySymbol: "🍿", secondarySymbol: "🍩"})
+//    const [usePrimarySymbol, setUsePrimarySymbol] = useState(true)
+//    const [squares, setSquares] = useState(Array(9).fill(null))
+
     const winner = calculateWinner(squares)
     const statusText = winner ? `Winner:` : `Next player:`
     const statusSymbol = winner || getActiveSymbol()
 
-    function resetGame() {
-        setSquares(Array(9).fill(null))
-        setUsePrimarySymbol(true)
-    }
 
     function handleClick(squareIndex) {
         if (squares[squareIndex] || winner) return
 
         const nextSquares = squares.slice()
         nextSquares[squareIndex] = usePrimarySymbol ? symbols.primarySymbol : symbols.secondarySymbol
-        setSquares(nextSquares)
-        setUsePrimarySymbol(!usePrimarySymbol)
+        onPlay(nextSquares)
     }
 
     function getActiveSymbol() {
@@ -49,7 +96,7 @@ export default function Board() {
             <Square value={squares[8]} onSquareClick={() => handleClick(8)}/>
         </div>
         <div className="actions">
-            <button onClick={resetGame}>Reset Game</button>
+            <button onClick={onGameReset}>Reset Game</button>
         </div>
     </>
 }
