@@ -140,3 +140,17 @@ l1ilm
     background: green;
 }
 
+.symbols {
+    display: flex;
+    flex-direction: column;
+}
+
+.symbols label {
+    margin: 10px;
+}
+
+.symbols input {
+    font-size: 40px;
+    width: 50px;
+    margin-left: 10px;
+}

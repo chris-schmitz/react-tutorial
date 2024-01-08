@@ -161,6 +161,10 @@ function Board({squares, usePrimarySymbol, onPlay, onGameReset}) {
         return false
     }
 
+    function updateSymbols(primarySymbol, secondarySymbol) {
+
+    }
+
     return <>
         <div className="status">
             <span className="status-text">{statusText}</span><span className="status-symbol">{statusSymbol}</span>
@@ -180,6 +184,25 @@ function Board({squares, usePrimarySymbol, onPlay, onGameReset}) {
         </div>
         <div className="actions">
             <button onClick={onGameReset}>Reset Game</button>
+        </div>
+        <div className="symbols">
+            <label htmlFor="primarySymbol">Player 1 symbol:
+                <input
+                    name="primarySymbol"
+                    value={symbols.primarySymbol} maxLength="1"
+                    onChange={e => setSymbols({
+                        primarySymbol: e.target.value,
+                        secondarySymbol: symbols.secondarySymbol
+                    })}
+                />
+            </label>
+            <label htmlFor="secondarySymbol">Player 2 symbol:
+                <input
+                    name="secondarySymbol"
+                    value={symbols.secondarySymbol} maxLength="1"
+                    onChange={e => setSymbols({secondarySymbol: e.target.value, primarySymbol: symbols.primarySymbol})}
+                />
+            </label>
         </div>
     </>
 }
