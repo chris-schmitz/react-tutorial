@@ -2,8 +2,9 @@ import {useState} from "react";
 
 
 export default function Game() {
+    const historyInitialState = [{squares: Array(9).fill(null), newMoveGridIndex: null}]
     const [usePrimarySymbol, setUsePrimarySymbol] = useState(true)
-    const [history, setHistory] = useState([{squares: Array(9).fill(null), newMoveGridIndex: null}])
+    const [history, setHistory] = useState(historyInitialState)
     const [currentMove, setCurrentMove] = useState(0)
     const currentSquares = history[currentMove].squares
 
@@ -15,7 +16,7 @@ export default function Game() {
     }
 
     function handleGameReset() {
-        setHistory([Array(9).fill(null)])
+        setHistory(historyInitialState)
         setCurrentMove(0)
         setUsePrimarySymbol(true)
     }
