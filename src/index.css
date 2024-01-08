@@ -111,6 +111,7 @@ body {
     display: flex;
     flex-direction: row;
 }
+
 l1ilm
 .game-info {
     margin-left: 20px;
@@ -122,3 +123,20 @@ l1ilm
     width: 100%;
     justify-content: center;
 }
+
+.winning-cell {
+    background: gold;
+}
+
+.move {
+    background: lightgreen;
+    padding: 10px;
+    margin: 3px;
+    width: 300px;
+}
+
+.active-move {
+    color: white;
+    background: green;
+}
+
